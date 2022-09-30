@@ -79,7 +79,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
     //给程序设置一个默认的图标
     wndclass.hIcon = (HICON)LoadIcon(NULL,IDI_APPLICATION);
     //也可以为应用程序设定一个自定义的图标,！！！必须要严格的ico格式图标文件，与代码文件放在同一目录下!!!
-    // wndclass.hIcon              = (HICON) LoadImage( NULL, TEXT("snake.ico"), IMAGE_ICON, 
+    // wndclass.hIcon              = (HICON) LoadImage( NULL, TEXT("../ico/snake.ico"), IMAGE_ICON, 
                                                     // 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE);
     
     wndclass.hCursor            = LoadCursor (NULL, IDC_ARROW); //使用默认的鼠标指针
