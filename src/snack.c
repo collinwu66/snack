@@ -1,10 +1,10 @@
-
 /***********************【程序说明】********************************/
 //                文件名：snake.c 
 //                介绍：win32贪吃蛇程序
 //                作者：茫静无
-//                时间：2022/1/13
-//                版本：2.0
+//                创建时间：2022/1/12
+//                修改人：茫静无
+//                最后一次修改时间：2022/9/2
 /******************************************************************/
 
 //-------------------------------【头文件包含部分】-------------------------------
@@ -79,7 +79,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
     //给程序设置一个默认的图标
     wndclass.hIcon = (HICON)LoadIcon(NULL,IDI_APPLICATION);
     //也可以为应用程序设定一个自定义的图标,！！！必须要严格的ico格式图标文件，与代码文件放在同一目录下!!!
-    // wndclass.hIcon              = (HICON) LoadImage( NULL, TEXT("../ico/snake.ico"), IMAGE_ICON, 
+    // wndclass.hIcon              = (HICON) LoadImage( NULL, TEXT("snake.ico"), IMAGE_ICON, 
                                                     // 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE);
     
     wndclass.hCursor            = LoadCursor (NULL, IDC_ARROW); //使用默认的鼠标指针
@@ -136,6 +136,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     HDC                     hdc;//定义一个设备dc，方便绘图
     PAINTSTRUCT              ps;
+    static RECT            rect;
     //将贪吃蛇界面分成60x50个小格子，创建一个二维数组存储界面信息：
     //    -2  ------------  代表墙体  ----------  WALL 
     //    -1  ------------  代表食物  ----------  FOOD
@@ -154,6 +155,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         //step4: 在WM_CREATE中进行游戏的初始化
         /************************************************/
         case WM_CREATE:
+            GetClientRect(hwnd,&rect);
             //初始化墙体
             for (row=0; row<60; row++)
             {
@@ -179,7 +181,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             food.x =  45;
             food.y = 45;
             s_canvas[food.x][food.y] = -1;
-            SetTimer(hwnd,1,2000,NULL);//由于机制问题，这种定时方式不准，简单起见，将就着用
+            SetTimer(hwnd,1,300,NULL);//由于机制问题，这种定时方式不准，简单起见，将就着用
             break;
 
         /*********************************************************************/
@@ -266,24 +268,20 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         //step6:在此处进行游戏界面的绘制
         case WM_PAINT://在该消息中根据s_canvas的内容进行界面的绘制
-            //应在1ms之内完成绘制
             hdc = BeginPaint (hwnd, &ps);//绘图从此处开始
             pen = CreatePen(PS_INSIDEFRAME,1,RGB(255,0,0));//创建红色画笔
             SelectObject (hdc,pen);//将画笔选入当前设备
             //绘制界面
-            
             hBrush = CreateSolidBrush(RGB(0,255,0));//创建绿色画刷
             SelectObject(hdc,hBrush);//将画刷选入当前设备
             for (col=0; col < 50; col++)
             {
                 for (row=0; row < 60; row++)   
                 {
-                    Sleep(15);
                     //绘制蛇身
                     if (s_canvas[row][col] > 1)
                     {
                         Rectangle(hdc,row*10,col*10,row*10+10,col*10+10);
-                        
                     }
                     //绘制蛇头
                     if (s_canvas[row][col] == 1)
@@ -356,27 +354,18 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 //找到新蛇尾的位置
 void setNewTail(const int canvas[][50] , int row, int* tail_x, int* tail_y)
 {
-    int i,j;
-    int x,y;
-    if ( *tail_x > 1 && *tail_x < 58 && *tail_y > 1 && *tail_y < 48 )
+    int r,col;
+    for (r=0; r < row; r++)
     {
-        x = *tail_x;
-        y = *tail_y;
-        for (i=x-1;i<=x+1;i++)
+        for (col=0; col < 50; col++)
         {
-            for (j=y-1;j<=y+1;j++)
+            if (canvas[r][col] > canvas[*tail_x][*tail_y])
             {
-                if ( canvas[i][j] > canvas[*tail_x][*tail_y])
-                {
-                    *tail_x = i;
-                    *tail_y = j;
-                }               
+                *tail_x = r;
+                *tail_y = col;
             }
         }
     }
-
-
     
-
 }
 
