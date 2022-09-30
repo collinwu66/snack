@@ -25,7 +25,7 @@
 #define   WALL      -2   //表示墙体
 #define   EMPTY      0   //表示没有物体的位置
 #define   HEAD       1   //表示蛇头
-#define   FOOD       -1  //表示食物
+
  
 
 //-------------------------------【全局结构体声明部分】----------------------------
@@ -291,7 +291,7 @@ LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam 
                         Ellipse( hdc, row * 10, col * 10, row * 10 + 10, col * 10 + 10 );
                     }
                     //绘制食物
-                    if ( s_canvas[row][col] == FOOD )
+                    if ( s_canvas[row][col] == -1 )
                     {
                         Ellipse( hdc, row * 10, col * 10, row * 10 + 10, col * 10 + 10);
                     }
